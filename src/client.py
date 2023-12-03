@@ -49,6 +49,10 @@ def client_socket(client_name, filename):
     
     try:
         send_file_data(sock, client_id, filename)
+        
+        return f"Arquivo {filename.split('/')[-1]} enviado com sucesso!"
+    except Exception as e:
+        print(e)
     finally:
         sock.close()
 
