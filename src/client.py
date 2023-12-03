@@ -52,8 +52,8 @@ def client_socket(client_name, filename):
     finally:
         sock.close()
 
-if __name__ == "__main__":
-    try:
-        client_socket("aluisio123", "/home/aluisio/github/file-transfer-socket/file.txt")
-    except KeyboardInterrupt:
-        print("\nPrograma finalizado pelo usuário.")
+# if __name__ == "__main__":
+#     try:
+#         client_socket("aluisio123", "/home/aluisio/github/file-transfer-socket/file.txt")
+#     except KeyboardInterrupt:
+#         print("\nPrograma finalizado pelo usuário.")

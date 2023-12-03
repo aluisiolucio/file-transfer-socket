@@ -17,7 +17,7 @@ def handle_client(connection):
     print(f"Cliente: {client_id}")
     
     if not os.path.exists(client_id):
-        os.mkdir(client_id)
+        os.mkdir("opt/" + client_id)
     
     file_name = connection.recv(1024).decode()
     print(f"Nome do arquivo: {file_name}")
@@ -26,7 +26,7 @@ def handle_client(connection):
     file_name = f"{timestamp}_{file_name}"
 
     try:
-        with open(os.path.join(client_id, file_name), "wb") as file:
+        with open(os.path.join("opt", client_id, file_name), "wb") as file:
             data = connection.recv(1024)
             while data:
                 file.write(data)
