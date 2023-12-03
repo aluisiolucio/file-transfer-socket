@@ -1,29 +1,38 @@
+import os
 import socket
 import threading
 import queue
 import time
 
-def create_server_socket():
-    return socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-def bind_and_listen(sock, host, port, total_clients):
+def init_server(host, port, total_clients):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind((host, port))
     sock.listen(total_clients)
 
+    return sock
+
 def handle_client(connection):
-    file_extension = connection.recv(1024).decode()
+    client_id = connection.recv(1024).decode()
+    print(f"Cliente: {client_id}")
+    
+    if not os.path.exists(client_id):
+        os.mkdir(client_id)
+    
+    file_name = connection.recv(1024).decode()
+    print(f"Nome do arquivo: {file_name}")
 
     timestamp = str(time.time()).replace('.', '')
-    filename = f"received_file_{timestamp}{file_extension}"
+    file_name = f"{timestamp}_{file_name}"
 
     try:
-        with open(filename, "wb") as file:
+        with open(os.path.join(client_id, file_name), "wb") as file:
             data = connection.recv(1024)
             while data:
                 file.write(data)
                 data = connection.recv(1024)
 
-        print(f"Arquivo {filename} recebido com sucesso.")
+        print(f"Arquivo {file_name} recebido com sucesso.")
 
     except Exception as e:
         print(f"Ocorreu um erro ao receber o arquivo: {str(e)}")
@@ -35,10 +44,9 @@ def handle_client(connection):
 def main():
     host = "0.0.0.0"
     port = 5556
-    total_clients = 5  # Defina o número desejado de clientes simultâneos
+    total_clients = 5
 
-    sock = create_server_socket()
-    bind_and_listen(sock, host, port, total_clients)
+    sock = init_server(host, port, total_clients)
 
     print(f'Aguardando conexões na porta {port}...')
 

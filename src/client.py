@@ -1,9 +1,7 @@
 import os
 import socket
-from dotenv import load_dotenv
+import time
 from hashlib import md5
-
-load_dotenv()
 
 
 def conect_to_server(host, port):
@@ -12,47 +10,50 @@ def conect_to_server(host, port):
 
     return sock
 
-def send_file_data(sock, filename):
+def send_file_data(sock, client_id, file_path):
     try:
-        # Verifica se o arquivo existe
-        if not os.path.isfile(filename):
+        if not os.path.isfile(file_path):
             print("O arquivo não existe. Por favor, insira um nome de arquivo válido.")
             return
+        
+        sock.send(client_id.encode())
+        time.sleep(2)
 
-        # Envia o nome do arquivo (incluindo a extensão)
-        file_extension = os.path.splitext(filename)[1]
-        sock.send(file_extension.encode())
+        file_name = file_path.split('/')[-1]
+        sock.send(file_name.encode())
+        time.sleep(5)
 
-        # Abre o arquivo e envia os dados
-        with open(filename, "rb") as file:
+        with open(file_path, "rb") as file:
             data = file.read(1024)
             while data:
                 sock.send(data)
                 data = file.read(1024)
 
-        print(f"Arquivo {filename} enviado com sucesso.")
+        print(f"Arquivo {file_path} enviado com sucesso.")
 
     except Exception as e:
         print(f"Ocorreu um erro ao enviar o arquivo: {str(e)}")
 
-def client_socket():
+def client_socket(client_name, filename):
     host = "127.0.0.1"
     port = 5556
 
     sock = conect_to_server(host, port)
 
-    while True:
-        filename = input("Insira o nome do arquivo que você deseja enviar (ou 'exit' para sair): ")
+    # while True:
+    #     filename = input("Insira o nome do arquivo que você deseja enviar (ou 'exit' para sair): ")
         
-        if filename.lower() == 'exit':
-            break
-
-        send_file_data(sock, filename)
-
-    sock.close()
+    #     if filename.lower() == 'exit':
+    #         break
+    client_id = md5(client_name.encode()).hexdigest()
+    
+    try:
+        send_file_data(sock, client_id, filename)
+    finally:
+        sock.close()
 
 if __name__ == "__main__":
     try:
-        client_socket()
+        client_socket("aluisio123", "/home/aluisio/github/file-transfer-socket/file.txt")
     except KeyboardInterrupt:
         print("\nPrograma finalizado pelo usuário.")
