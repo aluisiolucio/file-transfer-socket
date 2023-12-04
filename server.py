@@ -16,8 +16,11 @@ def handle_client(connection):
     client_id = connection.recv(1024).decode()
     print(f"Cliente: {client_id}")
     
-    if not os.path.exists("opt/" + client_id):
-        os.mkdir("opt/" + client_id)
+    if not os.path.exists("opt/"):
+        os.mkdir("opt/")
+    
+    if not os.path.exists(os.path.join("opt", client_id)):
+        os.mkdir(os.path.join("opt", client_id))
     
     file_name = connection.recv(1024).decode()
     print(f"Nome do arquivo: {file_name}")
