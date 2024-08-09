@@ -1,6 +1,6 @@
 import flet as ft
 
-from src.client import client_socket
+from client import client_socket
 
 
 if __name__ == "__main__":
