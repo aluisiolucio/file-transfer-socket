@@ -1,5 +1,13 @@
 # file-transfer-socket
 
+Aplicação de transferência de arquivos via socket TCP.
+
+## Tecnologias utilizadas
+
+- [Python](https://www.python.org/)
+- [Flet](https://flet.dev/)
+- Socket TCP
+
 ## Pré-requisitos
 
 - Python 3.11 ou superior
